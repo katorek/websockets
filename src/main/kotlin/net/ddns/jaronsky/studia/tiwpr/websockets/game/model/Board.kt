@@ -1,0 +1,103 @@
+package net.ddns.jaronsky.studia.tiwpr.websockets.game.model
+
+import java.util.stream.IntStream
+
+//class Board(
+////        lateinit values: Array<Array<Int>>
+//) {
+class Board(
+        var matrix: Array<IntArray> = Array(6, { IntArray(7, { 0 }) })
+) {
+
+//    constructor(matrix: Array<IntArray> ) {
+
+//    }
+//    init {
+//        matrix = Array(6, { IntArray(7, { 0 }) })
+//    }
+    fun testWin(): Pair<Boolean, Int> {
+        return IntStream.range(0, 4)
+                .mapToObj(this::check)
+                .filter(Pair<Boolean, Int>::first)
+                .findFirst().orElse(Pair(false, 0))
+    }
+
+    fun isWin(): Boolean {
+        return testWin().first
+    }
+
+    fun getWinner(): Int {
+        return testWin().second
+    }
+
+    private fun check(i: Int): Pair<Boolean, Int> {
+        when (i) {
+            0 -> return checkColumn()
+            1 -> return checkRow()
+            2 -> return checkDiagonal()
+            else -> return checkCounterDiagonal()
+        }
+    }
+
+    private fun checkColumn(): Pair<Boolean, Int> {
+        for (i in 0..matrix.size - 4) {
+            for (j in 0..matrix[i].size - 1) {
+                val el = matrix[i][j]
+                if (el != 0 &&
+                        el == matrix[i + 1][j] &&
+                        el == matrix[i + 2][j] &&
+                        el == matrix[i + 3][j]) {
+                    return Pair(true, el)
+                }
+            }
+        }
+        return Pair(false, 0)
+    }
+
+    private fun checkRow(): Pair<Boolean, Int> {
+        for (i in 0..matrix.size - 1) {
+            for (j in 0..matrix[i].size - 4) {
+                val el = matrix[i][j]
+                if (el != 0 &&
+                        el == matrix[i][j + 1] &&
+                        el == matrix[i][j + 2] &&
+                        el == matrix[i][j + 3]) {
+                    return Pair(true, el)
+                }
+            }
+        }
+        return Pair(false, 0)
+    }
+
+    private fun checkDiagonal(): Pair<Boolean, Int> {
+        for (i in 0..matrix.size - 4) {
+            for (j in 0..matrix[i].size - 4) {
+                val el = matrix[i][j]
+                if (el != 0 &&
+                        el == matrix[i + 1][j + 1] &&
+                        el == matrix[i + 2][j + 2] &&
+                        el == matrix[i + 3][j + 3]) {
+                    return Pair(true, el)
+                }
+            }
+        }
+        return Pair(false, 0)
+    }
+
+    fun checkCounterDiagonal(): Pair<Boolean, Int> {
+        for (i in 0..matrix.size - 4) {
+            for (j in 3..matrix[i].size - 1) {
+                val el = matrix[i][j]
+                if (el != 0 &&
+                        el == matrix[i + 1][j - 1] &&
+                        el == matrix[i + 2][j - 2] &&
+                        el == matrix[i + 3][j - 3]) {
+                    return Pair(true, el)
+                }
+            }
+        }
+        return Pair(false, 0)
+    }
+
+
+}
