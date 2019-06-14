@@ -6,16 +6,9 @@ import org.springframework.web.socket.config.annotation.*
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean
 
 
-
-
-
-
 @Configuration
 @EnableWebSocket
-//@EnableWebSocketMessageBroker
-//class WebSocketConfig: AbstractWebSocketHandler() {
-class WebSocketConfig:  WebSocketConfigurer {
-//class WebSocketConfig: WebSocketMessageBrokerConfigurer {
+class WebSocketConfig: WebSocketConfigurer {
 
     @Bean
     fun createWebSocketContainer(): ServletServerContainerFactoryBean {
@@ -27,9 +20,6 @@ class WebSocketConfig:  WebSocketConfigurer {
     @Override
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
         registry.addHandler(WebSocketHandler(), "/socket").setAllowedOrigins("*")
-//        registry.addHandler(MyBinaryHandler(), "/binary").withSockJS()
     }
-
-
 
 }

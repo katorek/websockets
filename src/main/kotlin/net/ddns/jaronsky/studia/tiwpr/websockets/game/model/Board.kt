@@ -1,20 +1,14 @@
 package net.ddns.jaronsky.studia.tiwpr.websockets.game.model
 
+import java.util.*
 import java.util.stream.IntStream
+import kotlin.collections.ArrayList
+import kotlin.streams.toList
 
-//class Board(
-////        lateinit values: Array<Array<Int>>
-//) {
 class Board(
         var matrix: Array<IntArray> = Array(6, { IntArray(7, { 0 }) })
 ) {
 
-//    constructor(matrix: Array<IntArray> ) {
-
-//    }
-//    init {
-//        matrix = Array(6, { IntArray(7, { 0 }) })
-//    }
     fun testWin(): Pair<Boolean, Int> {
         return IntStream.range(0, 4)
                 .mapToObj(this::check)
@@ -84,7 +78,7 @@ class Board(
         return Pair(false, 0)
     }
 
-    fun checkCounterDiagonal(): Pair<Boolean, Int> {
+    private fun checkCounterDiagonal(): Pair<Boolean, Int> {
         for (i in 0..matrix.size - 4) {
             for (j in 3..matrix[i].size - 1) {
                 val el = matrix[i][j]
@@ -97,6 +91,28 @@ class Board(
             }
         }
         return Pair(false, 0)
+    }
+
+    private fun getColumn(column: Int): List<Int> {
+        return Arrays.stream(matrix).map { arr -> arr.get(column) }.toList()
+    }
+
+    fun possibleMoves(): ArrayList<Int> {
+        val  moves = arrayListOf<Int>()
+        for ((idx, arr) in matrix[matrix.size - 1].withIndex()) {
+            if ( arr == 0) moves.add(idx)
+        }
+        return moves
+    }
+
+    fun makeMove(column: Int, player: Int) {
+        val col = getColumn(column)
+        for ((idx, value) in col.withIndex()) {
+            if (value == 0) {
+                matrix[idx][column] = player
+                break
+            }
+        }
     }
 
 

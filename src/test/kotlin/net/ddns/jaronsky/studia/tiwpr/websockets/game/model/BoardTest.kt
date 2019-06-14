@@ -12,7 +12,8 @@ class BoardTest(
         val testName: String,
         val board: String,
         val shouldWin: Boolean,
-        val winner: Int
+        val winner: Int,
+        val possibleMoves: ArrayList<Int>
 ) {
     lateinit var gameBoard: Board
 
@@ -21,13 +22,13 @@ class BoardTest(
 
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: {0}")
-        fun data(): Collection<Array<Any>> {
+        fun data(): Collection<Array<out Any>> {
             return listOf(
-                    arrayOf("Row", b.row, true, 1),
-                    arrayOf("Col", b.col, true, 1),
-                    arrayOf("Diagonal", b.diagnoal, true, 1),
-                    arrayOf("Counter diagonal", b.cdiagnoal, true, 1),
-                    arrayOf("No winner", b.noWin, false, 0)
+                    arrayOf("Row winner", b.row, true, 1, arrayListOf(1, 2, 3, 5)),
+                    arrayOf("Column winner", b.col, true, 1, arrayListOf<Int>()),
+                    arrayOf("Diagonal winner", b.diagnoal, true, 1, arrayListOf(0, 1, 2, 4, 5, 6)),
+                    arrayOf("Count diag winner", b.cdiagnoal, true, 1, arrayListOf(0, 1, 2, 4)),
+                    arrayOf("No winner", b.noWin, false, 0, arrayListOf(0, 3, 5))
             )
         }
     }
@@ -45,6 +46,11 @@ class BoardTest(
     @Test
     fun testWinner() {
         assertEquals(winner, gameBoard.getWinner())
+    }
+
+    @Test
+    fun testPossibleMoves() {
+        assertArrayEquals(possibleMoves.toArray(), gameBoard.possibleMoves().toArray())
     }
 
 }
