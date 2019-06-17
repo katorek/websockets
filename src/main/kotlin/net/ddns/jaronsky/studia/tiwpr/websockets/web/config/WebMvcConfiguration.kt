@@ -6,12 +6,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 
 
-@Configuration
-@EnableWebMvc
-class WebMvcConfiguration: WebMvcConfigurer {
+//@Configuration
+//@EnableWebMvc
+class WebMvcConsfiguration: WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/**")
-        println("ALA MA KOTA A KOT MA ALE, ALE ALA NIE MA ALI BO KOTA ALI NIE MA PO KOPALI")
+        registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
+        println("ALA MA KOTA A KOT MA ALE, ALE ALA NIE MA ALI BO KOTA ALI NIE MA PO KOPALI -------------")
     }
 }

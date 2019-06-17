@@ -8,6 +8,7 @@ export class User {
   authorities: String[];
   enabled: boolean;
   token?: string;
+  basicAuth: string;
 }
 
 class Authority {
