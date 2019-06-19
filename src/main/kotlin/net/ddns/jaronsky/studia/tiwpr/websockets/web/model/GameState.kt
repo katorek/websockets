@@ -2,6 +2,7 @@ package net.ddns.jaronsky.studia.tiwpr.websockets.web.model
 
 import net.ddns.jaronsky.studia.tiwpr.websockets.game.model.Board
 import net.ddns.jaronsky.studia.tiwpr.websockets.game.model.Game
+import java.util.*
 
 class GameState(
         val name: String,
@@ -22,6 +23,7 @@ class GameState(
     var draw = false
     var disconnect = false
     val game = Game()
+    val date = Date()
 
 
     fun join(pl: String) {
@@ -29,5 +31,9 @@ class GameState(
             player2 = pl
             started = true
         }
+    }
+
+    fun disconnect(pl: String) {
+
     }
 }

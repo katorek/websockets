@@ -1,20 +1,24 @@
 package net.ddns.jaronsky.studia.tiwpr.websockets.web.controller
 
+import net.ddns.jaronsky.studia.tiwpr.websockets.web.model.AvailableGame
 import net.ddns.jaronsky.studia.tiwpr.websockets.web.model.GameState
 import org.springframework.messaging.simp.SimpMessagingTemplate
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.stream.Stream
 
 @RestController
+@RequestMapping("/ttt/game")
 class ServerController(
         val gameService: GameService,
         val template: SimpMessagingTemplate
 ) {
 
+    @GetMapping
+    fun getGames(): Stream<AvailableGame>? {
+        return gameService.availableGames()
+    }
 
-    @PostMapping("/game")
+    @PostMapping
     fun createGame(
             @RequestParam(value = "player") player: String,
             @RequestParam(value = "name") name: String
@@ -23,25 +27,26 @@ class ServerController(
         return game
     }
 
-    @PatchMapping("/game")
+    @PatchMapping
     fun joinGame(
             @RequestParam(value = "id") id: Int,
             @RequestParam(value = "player") player: String
-    ) : GameState? {
-        val game = gameService.getById(id)!!
+    ): GameState? {
 
-        if( !game.started && !game.disconnect) {
-            game.join(player)
-            gameService.update(game)
-            updateGame(id, game)
-            return game
-        }
+        return gameService.joinGame(id, player)
 
-        return null
+    }
+
+    @PatchMapping
+    fun disconnectGame(
+            @RequestParam("id") id: Int,
+            @RequestParam("player") player: String,
+            @RequestParam("disconnect") disconnect: Boolean): GameState? {
+        return gameService.disconnect(id, player, disconnect)
     }
 
     private fun updateGame(id: Int, game: GameState) {
-
+//        gameService.updateGameState(id, game)
     }
 
 }
