@@ -1,8 +1,8 @@
 package net.ddns.jaronsky.studia.tiwpr.websockets.game.model
 
 import java.util.*
+import java.util.stream.Collectors
 import java.util.stream.IntStream
-import kotlin.collections.ArrayList
 import kotlin.streams.toList
 
 class Board(
@@ -98,9 +98,9 @@ class Board(
     }
 
     fun possibleMoves(): ArrayList<Int> {
-        val  moves = arrayListOf<Int>()
+        val moves = arrayListOf<Int>()
         for ((idx, arr) in matrix[matrix.size - 1].withIndex()) {
-            if ( arr == 0) moves.add(idx)
+            if (arr == 0) moves.add(idx)
         }
         return moves
     }
@@ -115,5 +115,16 @@ class Board(
         }
     }
 
+    override fun toString(): String {
+        val x = Arrays.stream(matrix)
+                .map { it!!.joinToString("") }
+                .collect(Collectors.joining(""))
+
+        return Arrays.stream(matrix)
+                .map { it!!.joinToString("") }
+                .collect(Collectors.joining(""))
+
+//        return Arrays.stream(matrix).map { Arrays.stream(it).map(it.toString()) }.reduce()
+    }
 
 }

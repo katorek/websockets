@@ -11,4 +11,8 @@ class Game {
         board.makeMove(column, player)
     }
 
+    override fun toString(): String {
+        return board.toString()
+    }
+
 }

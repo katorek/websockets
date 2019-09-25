@@ -1,5 +1,6 @@
 package net.ddns.jaronsky.studia.tiwpr.websockets.web.config
 
+import net.ddns.jaronsky.studia.tiwpr.websockets.web.controller.GameService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.messaging.simp.config.MessageBrokerRegistry
@@ -9,18 +10,10 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 
 @Configuration
 @EnableWebSocket
-@EnableWebSocketMessageBroker
-class WebSocketConfig: WebSocketConfigurer, AbstractWebSocketMessageBrokerConfigurer() {
-
-    override fun configureMessageBroker(registry: MessageBrokerRegistry) {
-        registry.enableSimpleBroker("/ttt")
-        registry.setApplicationDestinationPrefixes("/ttt")
-//        super.configureMessageBroker(registry)
-    }
-
-    override fun registerStompEndpoints(registry: StompEndpointRegistry) {
-        registry.addEndpoint("/ttt-websocket").withSockJS()
-    }
+//@EnableWebSocketMessageBroker
+class WebSocketConfig(
+        val gameService: GameService
+) : WebSocketConfigurer  {
 
     @Bean
     fun createWebSocketContainer(): ServletServerContainerFactoryBean {
@@ -31,7 +24,7 @@ class WebSocketConfig: WebSocketConfigurer, AbstractWebSocketMessageBrokerConfig
 
     @Override
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(WebSocketHandler(), "/socket").setAllowedOrigins("*")
+        registry.addHandler(WebSocketHandler(gameService), "/ttt-websocket").setAllowedOrigins("*")
     }
 
 }

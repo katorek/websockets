@@ -9,12 +9,11 @@ import java.util.stream.Stream
 @RestController
 @RequestMapping("/ttt/game")
 class ServerController(
-        val gameService: GameService,
-        val template: SimpMessagingTemplate
+        val gameService: GameService
 ) {
 
     @GetMapping
-    fun getGames(): Stream<AvailableGame>? {
+    fun getGames(): List<AvailableGame> {
         return gameService.availableGames()
     }
 
@@ -23,21 +22,18 @@ class ServerController(
             @RequestParam(value = "player") player: String,
             @RequestParam(value = "name") name: String
     ): GameState {
-        val game = gameService.createGame(player, name)
-        return game
+        return gameService.createGame(name, player)
     }
 
-    @PatchMapping
+    @PatchMapping(params = arrayOf("id", "player"))
     fun joinGame(
             @RequestParam(value = "id") id: Int,
             @RequestParam(value = "player") player: String
     ): GameState? {
-
         return gameService.joinGame(id, player)
-
     }
 
-    @PatchMapping
+    @PatchMapping(params = arrayOf("id", "player", "disconnect"))
     fun disconnectGame(
             @RequestParam("id") id: Int,
             @RequestParam("player") player: String,

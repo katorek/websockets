@@ -2,20 +2,25 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+	<meta charset="UTF-8">
 	<title>Connect 4</title>
 	
-	<link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="/webjars/font-awesome/css/font-awesome.min.css">
-	<link href="/main.css" rel="stylesheet">
-	
-	<script src="/webjars/jquery/jquery.min.js"></script>
-	<script src="/webjars/tether/dist/js/tether.min.js"></script>
-	<script src="/webjars/popper.js/dist/umd/popper.min.js"></script>
-	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-	<script src="/webjars/sockjs-client/sockjs.min.js"></script>
-	<script src="/webjars/stomp-websocket/stomp.min.js"></script>
-	<script src="/app.js"></script>
+
+	<link href="/webjars/bootstrap/4.0.0-beta-1/css/bootstrap.min.css" rel="stylesheet">
+	<link 	rel="stylesheet" href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="main.css" rel="stylesheet">
+
+	<script src="/webjars/jquery/3.1.0/jquery.min.js"></script>
+	<script src="/webjars/tether/1.4.0/dist/js/tether.min.js"></script>
+	<script src="/webjars/popper.js/1.12.5/dist/umd/popper.min.js"></script>
+	<script src="/webjars/bootstrap/4.0.0-beta-1/js/bootstrap.min.js"></script>
+	<script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+	<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+	<script src="app.js"></script>
+
+	<script>
+		window.onload = checkIfReloaded;
+	</script>
 </head>
 <body>
 	<noscript>
@@ -27,7 +32,7 @@
 	<div id="menu" class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<h1>Tic Tac Toe</h1>
+				<h1>Połącz 4 w linii</h1>
 			</div>
 		</div>
 		<div class="row">
@@ -35,7 +40,7 @@
 				<div class="form-inline float-lg-right">
 					<div class="form-group">
 						<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createGameModal">
-							Create Game
+							Stwórz nową grę
 						</button>
 					</div>
 				</div>
@@ -49,9 +54,9 @@
 							<th>
 								<div class="col-md-6">
 									<button id="refresh" class="btn btn-primary btn-sm">
-										<span class="fa fa-refresh"></span> Refresh
+										<span class="fa fa-refresh"></span> Odśwież
 									</button>
-									<span>&nbsp;Available Games</span>
+									<span>&nbsp;Dostępne gry</span>
 								</div>
 							</th>
 						</tr>
@@ -78,30 +83,11 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-xs centered">
-				<table id="board">
-					<tr>
-						<td id="00" class="" x="0" y="0"></td>
-						<td id="01" class="v" x="0" y="1"></td>
-						<td id="02" class="" x="0" y="2"></td>
-					</tr>
-					<tr>
-						<td id="10" class="h" x="1" y="0"></td>
-						<td id="11" class="v h" x="1" y="1"></td>
-						<td id="12" class="h" x="1" y="2"></td>
-					</tr>
-					<tr>
-						<td id="20" class="" x="2" y="0"></td>
-						<td id="21" class="v" x="2" y="1"></td>
-						<td id="22" class="" x="2" y="2"></td>
-					</tr>
-				</table>
-				<br/><br/>
-			</div>
+			<canvas id="connectFour" width="700" height="600"></canvas>
 		</div>
 		<div class="row">
 			<div class="col-xs centered">
-				<button class="btn btn-danger" type="submit" data-toggle="modal" data-target="#disconnectModal">Disconnect</button>
+				<button class="btn btn-danger" type="submit" data-toggle="modal" data-target="#disconnectModal">Wyjdź z gry</button>
 <!--				<button id="rematch" class="btn btn-success" type="submit" disabled="disabled">Rematch</button>-->
 			</div>
 		</div>
@@ -112,17 +98,18 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="createGameModalLabel">Create Game</h5>
+					<h5 class="modal-title" id="createGameModalLabel">Stwórz grę</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<input type="text" id="gamename" class="form-control" placeholder="Game name here...">
+					<input type="text" id="gamename" class="form-control" placeholder="Nazwa gry...">
+					<!--<input type="text" id="player_name" class="form-control" placeholder="Player name">-->
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button id="create" type="button" class="btn btn-success">Create Game</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+					<button id="create" type="button" class="btn btn-success">Stwórz grę</button>
 				</div>
 			</div>
 		</div>
@@ -133,17 +120,17 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="disconnectModalLabel">Are you sure?</h5>
+					<h5 class="modal-title" id="disconnectModalLabel">Na pewno ?</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<span>Are you sure you want to leave the game?</span>
+					<span>Czy na pewno chcesz wyjść z gry ?</span>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button id="disconnect" type="button" class="btn btn-danger">Leave</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+					<button id="disconnect" type="button" class="btn btn-danger">Wyjdź</button>
 				</div>
 			</div>
 		</div>
